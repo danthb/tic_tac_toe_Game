@@ -1,8 +1,7 @@
-.App {
+.Game {
   text-align: center;
 }
-
-.App-body {
+.Game-body {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -11,4 +10,9 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.button-cell {
+  border: 5px solid white !important;
+  color: coral !important;
 }
