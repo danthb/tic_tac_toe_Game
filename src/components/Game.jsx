@@ -3,12 +3,13 @@ import React, {
   useState, useEffect
 } from 'react';
 import '../components/game.css'
+import '../components/winner.js'
 
 
 const Square = ({ takeTurn, id, player, newState }) => {
   const [color, setColor] = useState('green');
   const [status, setStatus] = useState(null);
-  const xo = ['o', 'x'];
+  const XorO = ['o', 'x'];
 
   const pallet = ['red', 'blue', 'green'];
   const getRamdomColor = () => pallet[Math.floor(Math.random() * 3)];
@@ -23,36 +24,62 @@ const Square = ({ takeTurn, id, player, newState }) => {
       onClick={(event) => {
         let col = getRamdomColor()
         setColor(col);
-        let nextPlayer = newState({ id: id, color: col });
+        let nextPlayer = newState(id);
         setStatus(nextPlayer)
         event.target.style.backgroundColor = color;
             
       }}
       >
       {/* {id} */}
-      <h1>{ xo[status]}</h1>
+      <h1>{ XorO[status]}</h1>
     </Button>)
 
   }
   
 const Board = () => {
   const [player, setPlayer] = useState(1);
-  const [state, setState] = useState([]);
+  const [state, setState] = useState(Array(9).fill(null));
 
 /*     const [mounted, setMounted] = useState(true) */
 /*     const toggle = () => setMounted(!mounted); */
   
   let status = `Player ${player}`;
+  let winner = checkWinner(state);
+  if(winner != null) status = `Player ${winner} wins`
   
-  const newState = (ob) => {
+  const newState = (idOfSquare) => {
+    let thePlayer = player
+    state[idOfSquare] = player;
+    setState(state);
+
     let nextPlayer = (player + 1) % 2;
     setPlayer(nextPlayer);
-    setState([...state, ob]);
-    console.log(`adding state ${JSON.stringify(state)}`);
-    status = `Player ${nextPlayer}`;
-    return nextPlayer
+    
+
+    return thePlayer
   }
 
+  function checkWinner(state) {
+
+    const win = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 5, 6],
+    ];
+    
+    for (let i = 0; i < win.length; i++) {
+        const [a, b, c] = win[i];
+        if (state[a] === state[b] && state[a] === state[c] && state[b] === state[c] )
+            return state[a]
+    }
+    return null
+      
+  }
   const takeTurn = (id) => {
     setPlayer((player + 1) % 2); // get next player
     return player;
